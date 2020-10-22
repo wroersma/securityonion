@@ -2,6 +2,7 @@ base:
   '*':
     - patch.needs_restarting
     - logrotate
+    - schedules.highstate
 
   '*_eval or *_helix or *_heavynode or *_sensor or *_standalone or *_import':
     - match: compound

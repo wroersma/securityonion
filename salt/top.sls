@@ -35,6 +35,7 @@ base:
     - common
     - patch.os.schedule
     - motd
+    - schedule
   
   '*_helix and G@saltversion:{{saltversion}}':
     - match: compound
@@ -53,7 +54,6 @@ base:
     - redis
     - logstash
     - filebeat
-    - schedule
 
   '*_sensor and G@saltversion:{{saltversion}}':
     - match: compound
@@ -77,7 +77,6 @@ base:
     {%- if FLEETMANAGER or FLEETNODE %}
     - fleet.install_package
     {%- endif %}
-    - schedule
     - docker_clean
 
   '*_eval and G@saltversion:{{saltversion}}':
@@ -122,7 +121,6 @@ base:
     - fleet.install_package
     {%- endif %}
     - utility
-    - schedule
     - soctopus
     {%- if THEHIVE != 0 %}
     - thehive
@@ -168,7 +166,6 @@ base:
     - elastalert
     - filebeat
     - utility
-    - schedule
     {%- if FLEETMANAGER or FLEETNODE %}
     - fleet
     - fleet.install_package
@@ -231,7 +228,6 @@ base:
     - fleet.install_package
     {%- endif %}
     - utility
-    - schedule
     - soctopus
     {%- if THEHIVE != 0 %}
     - thehive
@@ -257,7 +253,6 @@ base:
     {%- if FLEETMANAGER or FLEETNODE %}
     - fleet.install_package
     {%- endif %}
-    - schedule
     - docker_clean
 
   '*_node and I@node:node_type:hot and G@saltversion:{{saltversion}}':
@@ -269,7 +264,6 @@ base:
     {%- if FLEETMANAGER or FLEETNODE %}
     - fleet.install_package
     {%- endif %}
-    - schedule
     - docker_clean
 
   '*_node and I@node:node_type:warm and G@saltversion:{{saltversion}}':
@@ -280,7 +274,6 @@ base:
     {%- if FLEETMANAGER or FLEETNODE %}
     - fleet.install_package
     {%- endif %}
-    - schedule
     - docker_clean
 
   '*_searchnode and G@saltversion:{{saltversion}}':
@@ -301,7 +294,6 @@ base:
     {%- if FLEETMANAGER or FLEETNODE %}
     - fleet.install_package
     {%- endif %}
-    - schedule
     - docker_clean
 
   '*_managersensor and G@saltversion:{{saltversion}}':
@@ -317,7 +309,6 @@ base:
     {%- if FLEETMANAGER or FLEETNODE %}
     - fleet.install_package
     {%- endif %}
-    - schedule
     - docker_clean
 
   '*_managersearch and G@saltversion:{{saltversion}}':
@@ -350,7 +341,6 @@ base:
     - elastalert
     - filebeat
     - utility
-    - schedule
     {%- if FLEETMANAGER or FLEETNODE %}
     - fleet
     - fleet.install_package
@@ -398,7 +388,6 @@ base:
     - zeek
     {%- endif %}
     - filebeat
-    - schedule
     - docker_clean
   
   '*_fleet and G@saltversion:{{saltversion}}':
@@ -436,5 +425,4 @@ base:
     - utility
     - suricata
     - zeek
-    - schedule
     - docker_clean

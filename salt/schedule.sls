@@ -1,5 +1,3 @@
-schedule:
-  schedule.present:
-    - function: state.highstate
-    - minutes: 15
-    - maxrunning: 1
+remove_pre_2.3.1_highstate_schedule:
+  schedule.absent:
+    - name: schedule
