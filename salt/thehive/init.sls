@@ -65,21 +65,6 @@ cortexresponders:
     - group: 939
     - template: jinja
 
-# Install Elasticsearch
-
-# Made directory for ES data to live in
-thehiveesdata:
-  file.directory:
-    - name: /nsm/thehive/esdata
-    - makedirs: True
-    - user: 939
-    - group: 939
-
-append_so-thehive-es_so-status.conf:
-  file.append:
-    - name: /opt/so/conf/so-status/so-status.conf
-    - text: so-thehive-es
-
 # Install Cortex
 so-cortex:
   docker_container.running:
