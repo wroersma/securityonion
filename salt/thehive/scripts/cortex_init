@@ -60,7 +60,7 @@ if [ -f /opt/so/state/cortex.txt ]; then
     exit 0
 else
     rm -f garbage_file
-    while ! wget -O garbage_file {{URLBASE}}:9500 2>/dev/null
+    while ! wget -O garbage_file {{URLBASE}}:9300 2>/dev/null
     do
       echo "Waiting for Elasticsearch..."
       rm -f garbage_file
