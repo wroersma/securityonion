@@ -75,25 +75,6 @@ thehiveesdata:
     - user: 939
     - group: 939
 
-so-thehive-es:
-  docker_container.running:
-    - image: {{ MANAGER }}:5000/{{ IMAGEREPO }}/so-thehive-es:{{ VERSION }}
-    - hostname: so-thehive-es
-    - name: so-thehive-es
-    - user: 939
-    - interactive: True
-    - tty: True
-    - binds:
-      - /nsm/thehive/esdata:/usr/share/elasticsearch/data:rw
-      - /opt/so/conf/thehive/etc/es/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-      - /opt/so/conf/thehive/etc/es/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties:ro
-      - /opt/so/log/thehive:/var/log/elasticsearch:rw
-    - environment:
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-    - port_bindings:
-      - 0.0.0.0:9400:9400
-      - 0.0.0.0:9500:9500
-
 append_so-thehive-es_so-status.conf:
   file.append:
     - name: /opt/so/conf/so-status/so-status.conf
