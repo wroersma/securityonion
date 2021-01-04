@@ -25,7 +25,7 @@ whiptail_airgap() {
 	"AIRGAP" "This manager does not have internet access" 3>&1 1>&2 2>&3 )
 
 	local exitstatus=$?
-	whiptail_check_exitstatus $exitstatus "pre_main"
+	whiptail_check_exitstatus $exitstatus
 }
 
 whiptail_basic_suri() {
@@ -95,11 +95,9 @@ whiptail_cancel() {
 }
 
 whiptail_check_exitstatus() {
-	local menu_type=$2
-
 	case $1 in
 		1)
-			if [[ $menu_type =~ ^("main" "pre_main") ]]; then
+			if [[ $cancel == true ]]; then
 				whiptail_cancel
 			else
 				whiptail_main_menu
@@ -554,7 +552,7 @@ whiptail_install_type() {
 	)
 
 	local exitstatus=$?
-	whiptail_check_exitstatus $exitstatus "pre_main"
+	whiptail_check_exitstatus $exitstatus
 
 	if [[ $install_type == "DISTRIBUTED" ]]; then
 		whiptail_install_type_dist
@@ -659,7 +657,7 @@ whiptail_first_menu_iso() {
 		 3>&1 1>&2 2>&3
 	)
 	local exitstatus=$?
-	whiptail_check_exitstatus $exitstatus "pre_main"
+	whiptail_check_exitstatus $exitstatus
 }
 
 whiptail_main_menu() {
@@ -670,6 +668,8 @@ whiptail_main_menu() {
 	
 	local opt
 	local opt_count
+
+	cancel=true
 
 	if [[ $is_sensor ]]; then
 		sensor_net_msg='and sensor '
@@ -757,8 +757,9 @@ whiptail_main_menu() {
 	)
 
 	local exitstatus=$?
-	whiptail_check_exitstatus "$exitstatus" "main"
+	whiptail_check_exitstatus "$exitstatus"
 
+	cancel=false
 	whiptail_menu_set "$option"
 }
 
@@ -951,7 +952,7 @@ whiptail_manager_adv() {
 	if [[ $MANAGERADV == "ADVANCED" ]]; then is_advanced=true; fi
 
 	local exitstatus=$?
-	whiptail_check_exitstatus $exitstatus "pre_main"
+	whiptail_check_exitstatus $exitstatus
 
 }
 
@@ -1108,7 +1109,7 @@ whiptail_node_advanced() {
 	"NODEADVANCED" "Advanced Node Setup" 3>&1 1>&2 2>&3 )
 
 	local exitstatus=$?
-	whiptail_check_exitstatus $exitstatus "pre_main"
+	whiptail_check_exitstatus $exitstatus
 
 }
 

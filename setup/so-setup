@@ -168,6 +168,8 @@ if [ "$automated" == no ]; then
 	fi
 fi
 
+# Flag for cancelling or returning to main menu
+cancel=true
 if ! [[ -f $install_opt_file ]]; then
 	if (whiptail_you_sure); then
 		true
