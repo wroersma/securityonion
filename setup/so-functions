@@ -2299,7 +2299,8 @@ whiptail_menu_set() {
 	case "$opt" in
 		"Networking")
 			#TODO: More work needs to be done to networking logic before this can be filled in
-			completed_opts+=("$opt") && whiptail_main_menu
+			completed_opts+=("$opt")
+			whiptail_main_menu
 		;;
 		"Metadata Tool")
 			whiptail_metadata_tool
@@ -2314,7 +2315,8 @@ whiptail_menu_set() {
 			if [ "$RULESETUP" != 'ETOPEN' ]; then
 				whiptail_oinkcode
 			fi
-			completed_opts+=("$opt") &&	whiptail_main_menu
+			completed_opts+=("$opt")
+			whiptail_main_menu
 		;;
 		"Sensor")
 			whiptail_homenet_sensor
@@ -2327,7 +2329,8 @@ whiptail_menu_set() {
 				whiptail_basic_zeek
 				whiptail_basic_suri
 			fi
-			completed_opts+=("$opt") && whiptail_main_menu
+			completed_opts+=("$opt")
+			whiptail_main_menu
 		;;
 		"Components")
 			whiptail_components_adv_warning
@@ -2339,7 +2342,8 @@ whiptail_menu_set() {
 			else
 				info "Disabling Strelka rules: STRELKA='$STRELKA'"
 			fi
-			completed_opts+=("$opt") && whiptail_main_menu
+			completed_opts+=("$opt")
+			whiptail_main_menu
 		;;
 		"Access")
 			collect_webuser_inputs
@@ -2351,7 +2355,8 @@ whiptail_menu_set() {
 				FLEETNODEUSER=$WEBUSER
 				FLEETNODEPASSWD1=$WEBPASSWD1
 			fi
-			completed_opts+=("$opt") && whiptail_main_menu
+			completed_opts+=("$opt")
+			whiptail_main_menu
 		;;
 		"Fleet User")
 			collect_fleetuser_inputs
@@ -2366,7 +2371,8 @@ whiptail_menu_set() {
 					whiptail_manager_updates_warning
 				fi
 			fi
-			completed_opts+=("$opt") && whiptail_main_menu
+			completed_opts+=("$opt")
+			whiptail_main_menu
 		;;
 		"Advanced")
 			if [[ $is_node && ! $is_eval ]]; then
@@ -2388,11 +2394,13 @@ whiptail_menu_set() {
 					LSPIPELINEBATCH=125
 				fi
 			fi
-			completed_opts+=("$opt") &&	whiptail_main_menu
+			completed_opts+=("$opt")
+			whiptail_main_menu
 		;;
 		"Run so-allow")
 			whiptail_so_allow
-			completed_opts+=("$opt") && whiptail_main_menu
+			completed_opts+=("$opt")
+			whiptail_main_menu
 		;;
 	esac
 }
