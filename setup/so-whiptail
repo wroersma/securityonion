@@ -748,7 +748,7 @@ whiptail_main_menu() {
 	__check_comp_opt_list "$opt"
 	menu_opts+=("[$opt_status] $opt" "Other required installation options")
 
-	if [[ $opt_count -ge  ${#completed_opts[@]} ]]; then
+	if [[ ${#completed_opts[@]} -ge $opt_count ]]; then
 		menu_opts+=("FINISH" "Confirm settings and begin installation")
 	fi
 
