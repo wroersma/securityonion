@@ -25,7 +25,7 @@ whiptail_airgap() {
 	"AIRGAP" "This manager does not have internet access" OFF 3>&1 1>&2 2>&3 )
 
 	local exitstatus=$?
-	whiptail_check_exitstatus $exitstatus
+	whiptail_check_exitstatus $exitstatus "pre_main"
 }
 
 whiptail_basic_suri() {
@@ -99,7 +99,7 @@ whiptail_check_exitstatus() {
 
 	case $1 in
 		1)
-			if [[ $menu_type == "main" ]]; then
+			if [[ $menu_type =~ ^("main" "pre_main") ]]; then
 				whiptail_cancel
 			else
 				whiptail_main_menu
@@ -554,7 +554,7 @@ whiptail_install_type() {
 	)
 
 	local exitstatus=$?
-	whiptail_check_exitstatus $exitstatus
+	whiptail_check_exitstatus $exitstatus "pre_main"
 
 	if [[ $install_type == "DISTRIBUTED" ]]; then
 		whiptail_install_type_dist
@@ -659,7 +659,7 @@ whiptail_first_menu_iso() {
 		 3>&1 1>&2 2>&3
 	)
 	local exitstatus=$?
-	whiptail_check_exitstatus $exitstatus
+	whiptail_check_exitstatus $exitstatus "pre_main"
 }
 
 whiptail_main_menu() {
@@ -951,7 +951,7 @@ whiptail_manager_adv() {
 	if [[ $MANAGERADV == "ADVANCED" ]]; then is_advanced=true; fi
 
 	local exitstatus=$?
-	whiptail_check_exitstatus $exitstatus
+	whiptail_check_exitstatus $exitstatus "pre_main"
 
 }
 
@@ -1108,7 +1108,7 @@ whiptail_node_advanced() {
 	"NODEADVANCED" "Advanced Node Setup" OFF 3>&1 1>&2 2>&3 )
 
 	local exitstatus=$?
-	whiptail_check_exitstatus $exitstatus
+	whiptail_check_exitstatus $exitstatus "pre_main"
 
 }
 
