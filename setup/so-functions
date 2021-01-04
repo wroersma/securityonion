@@ -2293,6 +2293,109 @@ es_heapsize() {
 	fi
 }
 
+whiptail_menu_set() {
+	local opt="$1"
+
+	case "$opt" in
+		"Networking")
+			#TODO: More work needs to be done to networking logic before this can be filled in
+			completed_opts+=("$opt") && whiptail_main_menu
+		;;
+		"Metadata Tool")
+			whiptail_metadata_tool
+			if [[ $is_advanced ]] && [ "$ZEEKVERSION" != 'SURICATA' ]; then
+				whiptail_manager_adv_service_zeeklogs
+			fi
+			# Don't run this function for now since Snort is not yet supported
+			# whiptail_nids
+			NIDS=Suricata
+			whiptail_rule_setup
+
+			if [ "$RULESETUP" != 'ETOPEN' ]; then
+				whiptail_oinkcode
+			fi
+			completed_opts+=("$opt") &&	whiptail_main_menu
+		;;
+		"Sensor")
+			whiptail_homenet_sensor
+			whiptail_sensor_config
+			if [ $NSMSETUP == 'ADVANCED' ]; then
+				whiptail_zeek_pins
+				whiptail_suricata_pins
+				whiptail_bond_nics_mtu
+			else
+				whiptail_basic_zeek
+				whiptail_basic_suri
+			fi
+			completed_opts+=("$opt") && whiptail_main_menu
+		;;
+		"Components")
+			whiptail_components_adv_warning
+			whiptail_enable_components
+
+			if [[ "$STRELKA" = 1 ]]; then
+				info "Enabling Strelka rules"
+				STRELKARULES=1
+			else
+				info "Disabling Strelka rules: STRELKA='$STRELKA'"
+			fi
+			completed_opts+=("$opt") && whiptail_main_menu
+		;;
+		"Access")
+			collect_webuser_inputs
+			get_redirect
+			if [[ $is_distmanager ]]; then
+				collect_soremote_inputs
+			fi
+			if [[ $install_type != "FLEET" ]]; then
+				FLEETNODEUSER=$WEBUSER
+				FLEETNODEPASSWD1=$WEBPASSWD1
+			fi
+			completed_opts+=("$opt") && whiptail_main_menu
+		;;
+		"Fleet User")
+			collect_fleetuser_inputs
+			collect_fleet_custom_hostname_inputs
+			whiptail_main_menu
+		;;
+		"Misc")
+			whiptail_dockernet_check
+			if [[ $is_distmanager || ( $is_sensor || $is_node || $is_fleet_standalone ) && ! $is_eval ]]; then
+				whiptail_manager_updates
+				if [[ $setup_type == 'network' && $MANAGERUPDATES == 1 ]]; then
+					whiptail_manager_updates_warning
+				fi
+			fi
+			completed_opts+=("$opt") && whiptail_main_menu
+		;;
+		"Advanced")
+			if [[ $is_node && ! $is_eval ]]; then
+				whiptail_node_advanced
+				if [ "$NODESETUP" == 'NODEADVANCED' ]; then
+					whiptail_node_es_heap
+					whiptail_node_ls_heap
+					whiptail_node_ls_pipeline_worker
+					whiptail_node_ls_pipline_batchsize
+					whiptail_node_ls_input_threads
+					whiptail_cur_close_days
+					whiptail_log_size_limit
+				else
+					NODE_ES_HEAP_SIZE=$ES_HEAP_SIZE
+					NODE_LS_HEAP_SIZE=$LS_HEAP_SIZE
+					LSPIPELINEWORKERS=$num_cpu_cores
+					LSPIPELINEBATCH=125
+					LSINPUTTHREADS=1
+					LSPIPELINEBATCH=125
+				fi
+			fi
+			completed_opts+=("$opt") &&	whiptail_main_menu
+		;;
+		"Run so-allow")
+			whiptail_so_allow
+			completed_opts+=("$opt") && whiptail_main_menu
+		;;
+	esac
+}
 
 whiptail_prog_new_message() {
 	local message=$1

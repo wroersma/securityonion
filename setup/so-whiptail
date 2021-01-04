@@ -65,18 +65,6 @@ whiptail_basic_zeek() {
 	whiptail_check_exitstatus $exitstatus
 }
 
-whiptail_zeek_version() {
-
-	[ -n "$TESTING" ] && return
-
-	ZEEKVERSION=$(whiptail --title "Security Onion Setup" --radiolist "What tool would you like to use to generate metadata?" 20 75 4 \
-	"ZEEK" "Zeek (formerly known as Bro)"  ON \
-	"SURICATA" "Suricata" OFF 3>&1 1>&2 2>&3)
-
-	local exitstatus=$?
-	whiptail_check_exitstatus $exitstatus
-}
-
 whiptail_bond_nics_mtu() {
 
 	[ -n "$TESTING" ] && return
@@ -107,14 +95,20 @@ whiptail_cancel() {
 }
 
 whiptail_check_exitstatus() {
+	local menu_type=$2
+
 	case $1 in
 		1)
-			whiptail_cancel
-			;;
+			if [[ $menu_type == "main" ]]; then
+				whiptail_cancel
+			else
+				whiptail_main_menu
+			fi
+		;;
 		255)
 			whiptail --title "Security Onion Setup" --msgbox "Whiptail error occured, exiting. Check log for details." 8 75
 			exit
-			;;
+		;;
 	esac
 }
 
@@ -549,13 +543,13 @@ whiptail_install_type() {
 	[ -n "$TESTING" ] && return
 
 	# What kind of install are we doing?
-	install_type=$(whiptail --title "Security Onion Setup" --radiolist \
+	install_type=$(whiptail --title "Security Onion Setup" --menu \
 	"Choose install type:" 12 65 5 \
-		"EVAL" "Evaluation mode (not for production) " ON \
-		"STANDALONE" "Standalone production install " OFF \
-		"DISTRIBUTED" "Distributed install submenu " OFF \
-		"IMPORT" "Standalone to import PCAP or log files " OFF \
-		"OTHER" "Other install types" OFF \
+		"EVAL" "Evaluation mode (not for production) " \
+		"STANDALONE" "Standalone production install " \
+		"DISTRIBUTED" "Distributed install submenu " \
+		"IMPORT" "Standalone to import PCAP or log files " \
+		"OTHER" "Other install types" \
 		3>&1 1>&2 2>&3
 	)
 
@@ -575,14 +569,14 @@ whiptail_install_type_dist() {
 
 	[ -n "$TESTING" ] && return
 	
-	install_type=$(whiptail --title "Security Onion Setup" --radiolist \
+	install_type=$(whiptail --title "Security Onion Setup" --menu \
 	"Choose distributed node type:" 13 60 6 \
-		"MANAGER" "Start a new grid " ON \
-		"SENSOR" "Create a forward only sensor " OFF \
-		"SEARCHNODE" "Add a search node with parsing " OFF \
-		"MANAGERSEARCH" "Manager + search node " OFF \
-		"FLEET" "Dedicated Fleet Osquery Node " OFF \
-		"HEAVYNODE" "Sensor + Search Node " OFF \
+		"MANAGER" "Start a new grid " \
+		"SENSOR" "Create a forward only sensor " \
+		"SEARCHNODE" "Add a search node with parsing " \
+		"MANAGERSEARCH" "Manager + search node " \
+		"FLEET" "Dedicated Fleet Osquery Node " \
+		"HEAVYNODE" "Sensor + Search Node " \
 		3>&1 1>&2 2>&3
 		# "HOTNODE" "Add Hot Node (Uses Elastic Clustering)" OFF \ # TODO
 		# "WARMNODE" "Add Warm Node to existing Hot or Search node" OFF \ # TODO
@@ -603,16 +597,16 @@ whiptail_install_type_other() {
 	# so-analyst-install will only work with a working network connection
 	# so only show it on network installs for now
 	if [[ $setup_type == 'network' ]]; then
-		install_type=$(whiptail --title "Security Onion Setup" --radiolist \
+		install_type=$(whiptail --title "Security Onion Setup" --menu \
 		"Choose distributed node type:" 9 65 2 \
-			"ANALYST" "Quit setup and run so-analyst-install " ON \
-			"HELIXSENSOR" "Create a Helix sensor " OFF \
+			"ANALYST" "Quit setup and run so-analyst-install " \
+			"HELIXSENSOR" "Create a Helix sensor " \
 			3>&1 1>&2 2>&3
 		)
 	else
-		install_type=$(whiptail --title "Security Onion Setup" --radiolist \
+		install_type=$(whiptail --title "Security Onion Setup" --menu \
 		"Choose distributed node type:" 8 65 1 \
-			"HELIXSENSOR" "Create a Helix sensor " ON \
+			"HELIXSENSOR" "Create a Helix sensor " \
 			3>&1 1>&2 2>&3
 		)
 	fi
@@ -645,10 +639,8 @@ whiptail_invalid_user_warning() {
 }
 
 whiptail_log_size_limit() {
-
 	[ -n "$TESTING" ] && return
 	
-
 	log_size_limit=$(whiptail --title "Security Onion Setup" --inputbox \
 	"Please specify the amount of disk space (in GB) you would like to allocate for Elasticsearch data storage: \n\
 	By default, this is set to 80% of the disk space allotted for /nsm." 10 75 "$log_size_limit" 3>&1 1>&2 2>&3)
@@ -669,6 +661,122 @@ whiptail_first_menu_iso() {
 	local exitstatus=$?
 	whiptail_check_exitstatus $exitstatus
 }
+
+whiptail_main_menu() {
+	[ -n "$TESTING" ] && return
+
+	local menu_opts
+	# menu_opts+=("${global_menu_opts[@]}")	
+	
+	local opt
+	local opt_count
+
+	if [[ $is_sensor ]]; then
+		sensor_net_msg='and sensor '
+	fi
+	
+	if ! [[ $is_minion ]] || ! [ -f /root/install_opt ]; then
+		if [[ $reinit_networking ]] || ! [[ -f $net_init_file ]]; then
+			opt="Networking"
+			((opt_count++))
+			__check_comp_opt_list "$opt"
+			menu_opts+=( "[$opt_status] $opt" "Configure management ${sensor_net_msg}interfaces" )
+		fi
+	fi
+
+	if [[ $is_manager && ! $is_eval ]]; then
+		opt="Metadata Tool"
+		((opt_count++))
+		__check_comp_opt_list "$opt"
+		menu_opts+=("[$opt_status] $opt" "Select a metadata tool to use and configure options for that tool")
+	fi
+
+	if [[ $is_sensor && ! $is_eval ]]; then
+		opt="Sensor"
+		((opt_count++))
+		__check_comp_opt_list "$opt"
+		menu_opts+=("[$opt_status] $opt" "Sensor configuration options")
+	fi
+
+	if [[ $is_manager ]]; then
+		opt="Components"
+		((opt_count++))
+		__check_comp_opt_list "$opt"
+		menu_opts+=("[$opt_status] $opt" "Enable/diable components of Security Onion")
+	fi
+	
+	if [[ $is_manager || $is_import ]]; then
+		opt="Access"
+		((opt_count++))
+		__check_comp_opt_list "$opt"
+
+		if [[ $is_distmanager ]]; then
+			local add_msg=", set soremote password,"
+		fi
+
+		menu_opts+=("[$opt_status] $opt" "Create web users$add_msg and choose how to access Security Onion in the browser")
+	fi
+
+	if [[ $is_fleet_standalone ]]; then
+		opt="Fleet User"
+		((opt_count++))
+		__check_comp_opt_list "$opt"
+		menu_opts+=("[$opt_status] $opt" "Create user for Fleet")
+	fi
+
+	if [[ $is_manager || $is_import ]]; then
+		opt="Run so-allow"
+		__check_comp_opt_list "$opt"
+		menu_opts+=("[$opt_status] $opt" "Allow a subnet or single ip to connect to ports 80/443 before boot (optional)")
+	fi
+
+	if [[ $is_manager && ! $is_eval ]] || [[ $is_node && ! $is_eval ]]; then
+		opt="ES Cluster"
+		__check_comp_opt_list "$opt"
+		menu_opts+=("[$opt_status] $opt" "ES cluster setup (optional, not receommended for those just starting out)")
+	fi
+
+	if [[ $NODESETUP == "NODEADVANCED" ]]; then\
+	opt="Advanced"
+	((opt_count++))
+	__check_comp_opt_list "$opt"
+	menu_opts=("[$opt_statu] $opt" "Advanced node settings")
+	fi
+
+	opt="Misc"
+	((opt_count++))
+	__check_comp_opt_list "$opt"
+	menu_opts+=("[$opt_status] $opt" "Other required installation options")
+
+	if [[ $opt_count -ge  ${#completed_opts[@]} ]]; then
+		menu_opts+=("FINISH" "Confirm settings and begin installation")
+	fi
+
+	option=$(whiptail --title "Security Onion Setup" --menu "Select an option" 18 75 10 \
+		"${menu_opts[@]}" 3>&1 1>&2 2>&3
+	)
+
+	local exitstatus=$?
+	whiptail_check_exitstatus "$exitstatus" "main"
+
+	whiptail_menu_set "$option"
+}
+
+__check_comp_opt_list() {
+	local opt=$1
+
+	for c_opt in "${completed_opts[@]}"; do
+		if [[ $c_opt == "$opt" ]]; then
+			opt_status="X"
+			return 0
+		else
+			opt_status=" "
+		fi
+	done
+
+	return 1
+}
+
 whiptail_make_changes() {
 
 	[ -n "$TESTING" ] && return
@@ -754,7 +862,7 @@ whiptail_management_nic() {
 
 }
 
-whiptail_management_interface_setup() {
+whiptail_net_setup_notice() {
 	[ -n "$TESTING" ] && return
 
 	local minion_msg
@@ -840,6 +948,8 @@ whiptail_manager_adv() {
 	"BASIC" "Install manager with recommended settings" ON  \
 	"ADVANCED" "Do additional configuration to the manager" OFF 3>&1 1>&2 2>&3 )
 
+	if [[ $MANAGERADV == "ADVANCED" ]]; then is_advanced=true; fi
+
 	local exitstatus=$?
 	whiptail_check_exitstatus $exitstatus
 
@@ -856,7 +966,7 @@ whiptail_manager_adv_escluster(){
 	local exitstatus=$?
 
 	if [[ $exitstatus == 0 ]]; then
-	whiptail_manager_adv_escluster_name
+		whiptail_manager_adv_escluster_name
 	fi
 }
 
@@ -1430,21 +1540,14 @@ whiptail_so_allow() {
 
 	[ -n "$TESTING" ] && return
 
-	whiptail --title "Security Onion Setup" \
-	--yesno "Do you want to run so-allow to allow access to the web tools?" \
-	8 75
-
-	local exitstatus=$?
-
-	if [[ $exitstatus == 0 ]]; then
-		ALLOW_CIDR=$(whiptail --title "Security Onion Setup" \
+	ALLOW_CIDR=$(whiptail --title "Security Onion Setup" \
 		--inputbox "Enter a single IP address or an IP range, in CIDR notation, to allow:" \
 		10 75 3>&1 1>&2 2>&3)
-		local exitstatus=$?
-		
-		export ALLOW_ROLE='a'
-		export ALLOW_CIDR
-	fi
+	local exitstatus=$?
+	whiptail_check_exitstatus
+	
+	export ALLOW_ROLE='a'
+	export ALLOW_CIDR
 }
 
 whiptail_storage_requirements() {
@@ -1576,11 +1679,13 @@ whiptail_zeek_pins() {
 	IFS=' ' read -ra ZEEKPINS <<< "$ZEEKPINS"
 }
 
-whiptail_zeek_version() {
+whiptail_metadata_tool() {
 
 	[ -n "$TESTING" ] && return
 
-	ZEEKVERSION=$(whiptail --title "Security Onion Setup" --radiolist "What tool would you like to use to generate metadata?" 20 75 4 "ZEEK" "Zeek (formerly known as Bro)"  ON \
+	# This variable name is legacy, 
+	ZEEKVERSION=$(whiptail --title "Security Onion Setup" --radiolist "What tool would you like to use to generate metadata?" 20 75 4 \
+	"ZEEK" "Zeek (formerly known as Bro)"  ON \
 	"SURICATA" "Suricata" OFF 3>&1 1>&2 2>&3)
 
 	local exitstatus=$?

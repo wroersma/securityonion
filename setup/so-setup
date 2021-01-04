@@ -179,7 +179,7 @@ if ! [[ -f $install_opt_file ]]; then
 		whiptail_first_menu_iso
 		if [[ $option == "Configure Network" ]]; then
 			network_init_whiptail
-			whiptail_management_interface_setup
+			whiptail_net_setup_notice
 			network_init
 			printf '%s\n' \
 				"MNIC=$MNIC" \
@@ -245,6 +245,20 @@ if [[ ( $is_manager || $is_import ) && $is_iso ]]; then
 	fi
 fi
 
+if [[ $is_manager && ! $is_eval ]]; then
+	whiptail_manager_adv
+fi
+
+if [[ $is_node && ! $is_eval ]]; then
+	whiptail_node_advanced
+fi
+
+whiptail_main_menu
+
+whiptail_make_changes
+
+#TODO: TEMPORARY FOR DEMO!!!!!!!!!!!!
+exit 0
 if ! [[ -f $install_opt_file ]]; then
 	if [[ $is_manager && $is_sensor ]]; then
 		check_requirements "standalone"
@@ -271,7 +285,7 @@ if ! [[ -f $install_opt_file ]]; then
 	fi
 
 	if [[ $is_minion ]] || [[ $reinit_networking ]] || ! [[ -f $net_init_file ]]; then
-		whiptail_management_interface_setup
+		whiptail_net_setup_notice
 	fi
 
 	if [[ $reinit_networking ]] || ! [[ -f $net_init_file ]]; then
