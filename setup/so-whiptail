@@ -19,10 +19,10 @@ whiptail_airgap() {
 
 	[ -n "$TESTING" ] && return
 
-	INTERWEBS=$(whiptail --title "Security Onion Setup" --radiolist \
+	INTERWEBS=$(whiptail --title "Security Onion Setup" --menu \
 	"Choose your install conditions:" 20 75 4 \
-	"STANDARD" "This manager has internet accesss" ON  \
-	"AIRGAP" "This manager does not have internet access" OFF 3>&1 1>&2 2>&3 )
+	"STANDARD" "This manager has internet accesss"  \
+	"AIRGAP" "This manager does not have internet access" 3>&1 1>&2 2>&3 )
 
 	local exitstatus=$?
 	whiptail_check_exitstatus $exitstatus "pre_main"
@@ -347,10 +347,10 @@ whiptail_dhcp_or_static() {
 
 	[ -n "$TESTING" ] && return
 
-	address_type=$(whiptail --title "Security Onion Setup" --radiolist \
+	address_type=$(whiptail --title "Security Onion Setup" --menu \
 	"Choose how to set up your management interface:" 20 78 4 \
-	"STATIC" "Set a static IPv4 address" ON  \
-	"DHCP" "Use DHCP to configure the Management Interface" OFF 3>&1 1>&2 2>&3 )
+	"STATIC" "Set a static IPv4 address"  \
+	"DHCP" "Use DHCP to configure the Management Interface" 3>&1 1>&2 2>&3 )
 	local exitstatus=$?
 	whiptail_check_exitstatus $exitstatus
 
@@ -462,10 +462,10 @@ whiptail_eval_adv() {
 
 	[ -n "$TESTING" ] && return
 
-	EVALADVANCED=$(whiptail --title "Security Onion Setup" --radiolist \
+	EVALADVANCED=$(whiptail --title "Security Onion Setup" --menu \
 	"Choose your eval install:" 20 75 4 \
-	"BASIC" "Install basic components for evaluation" ON  \
-	"ADVANCED" "Choose additional components to be installed" OFF 3>&1 1>&2 2>&3 )
+	"BASIC" "Install basic components for evaluation"  \
+	"ADVANCED" "Choose additional components to be installed" 3>&1 1>&2 2>&3 )
 
 	local exitstatus=$?
 	whiptail_check_exitstatus $exitstatus
@@ -943,10 +943,10 @@ whiptail_manager_adv() {
 
 	[ -n "$TESTING" ] && return
 
-	MANAGERADV=$(whiptail --title "Security Onion Setup" --radiolist \
+	MANAGERADV=$(whiptail --title "Security Onion Setup" --menu \
 	"Choose which type of manager to install:" 20 75 4 \
-	"BASIC" "Install manager with recommended settings" ON  \
-	"ADVANCED" "Do additional configuration to the manager" OFF 3>&1 1>&2 2>&3 )
+	"BASIC" "Install manager with recommended settings"  \
+	"ADVANCED" "Do additional configuration to the manager" 3>&1 1>&2 2>&3 )
 
 	if [[ $MANAGERADV == "ADVANCED" ]]; then is_advanced=true; fi
 
@@ -1102,10 +1102,10 @@ whiptail_node_advanced() {
 
 	[ -n "$TESTING" ] && return
 
-	NODESETUP=$(whiptail --title "Security Onion Setup" --radiolist \
+	NODESETUP=$(whiptail --title "Security Onion Setup" --menu \
 	"What type of config would you like to use?:" 20 75 4 \
-	"NODEBASIC" "Install Search Node with recommended settings" ON \
-	"NODEADVANCED" "Advanced Node Setup" OFF 3>&1 1>&2 2>&3 )
+	"NODEBASIC" "Install Search Node with recommended settings" \
+	"NODEADVANCED" "Advanced Node Setup" 3>&1 1>&2 2>&3 )
 
 	local exitstatus=$?
 	whiptail_check_exitstatus $exitstatus "pre_main"
@@ -1219,12 +1219,12 @@ whiptail_patch_schedule() {
 	[ -n "$TESTING" ] && return
 
 	local patch_schedule
-	patch_schedule=$(whiptail --title "Security Onion Setup" --radiolist \
+	patch_schedule=$(whiptail --title "Security Onion Setup" --menu \
 	"Choose OS patch schedule: \nThis will NOT update Security Onion related tools such as Zeek, Elasticsearch, Kibana, SaltStack, etc." 15 75 5 \
-	"Automatic" "Updates installed every 8 hours if available" ON \
-	"Manual" "Updates will be installed manually" OFF \
-	"Import Schedule" "Import named schedule on following screen" OFF \
-	"New Schedule" "Configure and name new schedule on next screen" OFF 3>&1 1>&2 2>&3 )
+	"Automatic" "Updates installed every 8 hours if available" \
+	"Manual" "Updates will be installed manually" \
+	"Import Schedule" "Import named schedule on following screen" \
+	"New Schedule" "Configure and name new schedule on next screen" 3>&1 1>&2 2>&3 )
 
 	local exitstatus=$?
 	whiptail_check_exitstatus $exitstatus
@@ -1247,8 +1247,6 @@ whiptail_patch_schedule() {
 		PATCHSCHEDULENAME='manual'
 		;;
 	esac
-
-
 }
 
 whiptail_patch_schedule_import() {
@@ -1374,10 +1372,10 @@ whiptail_sensor_config() {
 
 	[ -n "$TESTING" ] && return
 
-	NSMSETUP=$(whiptail --title "Security Onion Setup" --radiolist \
-	"What type of configuration would you like to use?" 20 75 4 \
-	"BASIC" "Install NSM components with recommended settings" ON \
-	"ADVANCED" "Configure each component individually" OFF 3>&1 1>&2 2>&3 )
+	NSMSETUP=$(whiptail --title "Security Onion Setup" --menu \
+		"What type of configuration would you like to use?" 20 75 4 \
+		"BASIC" "Install NSM components with recommended settings" \
+		"ADVANCED" "Configure each component individually" 3>&1 1>&2 2>&3 )
 
 	local exitstatus=$?
 	whiptail_check_exitstatus $exitstatus
@@ -1651,7 +1649,6 @@ whiptail_you_sure() {
 
 	local exitstatus=$?
 	return $exitstatus
-
 }
 
 whiptail_zeek_pins() {
