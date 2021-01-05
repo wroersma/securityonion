@@ -560,7 +560,7 @@ whiptail_install_type() {
 		whiptail_install_type_other
 	fi
 
-	install_type=$(${install_type^^} | tr -d ' ')
+	install_type=$(echo "${install_type^^}" | tr -d ' ')
 
 	export install_type
 }
@@ -587,7 +587,7 @@ whiptail_install_type_dist() {
 	local exitstatus=$?
 	whiptail_check_exitstatus $exitstatus
 
-	install_type=$(${install_type^^} | tr -d ' ')
+	install_type=$(echo "${install_type^^}" | tr -d ' ')
 
 	export install_type
 }
@@ -616,7 +616,7 @@ whiptail_install_type_other() {
 	local exitstatus=$?
 	whiptail_check_exitstatus $exitstatus
 
-	install_type=$(${install_type^^} | tr -d ' ')
+	install_type=$(echo "${install_type^^}" | tr -d ' ')
 
 	export install_type
 }
