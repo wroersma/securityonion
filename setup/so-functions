@@ -739,17 +739,14 @@ create_repo() {
 }
 
 detect_cloud() {
-  echo "Testing if setup is running on a cloud instance..." >> "$setup_log" 2>&1
+  echo "  Testing if setup is running on a cloud instance..." | tee -a "$setup_log"
   if ( curl --fail -s -m 5 http://169.254.169.254/latest/meta-data/instance-id > /dev/null ) || ( dmidecode -s bios-vendor | grep -q Google > /dev/null); then export is_cloud="true"; fi
 }
 
 detect_os() {
 
 	# Detect Base OS
-	echo "Detecting Base OS" >> "$setup_log" 2>&1
-	echo "Running initial setup steps..."
-
-	[[ $is_iso ]] || echo "  Checking OS version..."
+	[[ $is_iso ]] ||echo "  Detecting Base OS.." | tee -a "$setup_log"
 
 	if [ -f /etc/redhat-release ]; then
 		OS=centos
@@ -766,7 +763,7 @@ detect_os() {
 
 		if [[ ! $is_iso ]]; then
 			# Print message to stdout so the user knows setup is doing something
-			echo "  Installing required packages to run installer..."
+			echo "  Installing required packages to run installer..." | tee -a "$setup_log"
 			
 			# Install bind-utils so the host command exists
 		  if ! command -v host > /dev/null 2>&1; then
@@ -804,7 +801,7 @@ detect_os() {
 		fi
 
 		# Print message to stdout so the user knows setup is doing something
-		echo "  Installing required packages to run installer..."
+		echo "  Installing required packages to run installer..." | tee -a "$setup_log"
 
 		if ! command -v nmcli > /dev/null 2>&1; then
 			# Install network manager so we can do interface stuff
@@ -1916,6 +1913,7 @@ set_base_heapsizes() {
 }
 
 set_network_dev_status_list() {
+	echo "  Getting status of network interface(s)" | tee -a "$setup_log"
 	readarray -t nmcli_dev_status_list <<< "$(nmcli -t -f DEVICE,STATE -c no dev status)"
 	export nmcli_dev_status_list
 }

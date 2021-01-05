@@ -67,6 +67,8 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
+echo "Running initial setup steps..." | tee -a "$setup_log"
+
 if [[ "$setup_type" == 'iso' ]]; then
   is_iso=true
 fi
