@@ -255,6 +255,57 @@ if [[ $is_node && ! $is_eval ]]; then
 	whiptail_node_advanced
 fi
 
+# Set any variables needed
+set_default_log_size >> $setup_log 2>&1
+
+if [[ $is_helix ]]; then
+	RULESETUP=ETOPEN
+	NSMSETUP=BASIC
+	HNSENSOR=inherit
+	MANAGERUPDATES=0
+fi
+
+if [[ $is_helix || ( $is_manager && $is_node ) ]]; then
+	RULESETUP=ETOPEN
+	NSMSETUP=BASIC
+fi
+
+if [[ $is_manager && $is_node ]]; then
+	LSPIPELINEWORKERS=1
+	LSPIPELINEBATCH=125
+	LSINPUTTHREADS=1
+	LSPIPELINEBATCH=125
+	NIDS=Suricata
+	ZEEKVERSION=ZEEK
+fi
+
+if [[ $is_node ]]; then
+	CURCLOSEDAYS=30
+fi
+
+if [[ $is_import ]]; then
+	PATCHSCHEDULENAME=auto
+	MTU=1500
+	RULESETUP=ETOPEN
+	NSMSETUP=BASIC
+	HNSENSOR=inherit
+	MANAGERUPDATES=0
+	MANAGERADV=BASIC
+	INTERFACE=bond0
+	ZEEKVERSION=ZEEK
+	NIDS=Suricata
+	RULESETUP=ETOPEN
+	GRAFANA=0
+	OSQUERY=0
+	WAZUH=0
+	THEHIVE=0
+	PLAYBOOK=0
+fi
+
+if [[ $is_helix || $is_sensor || $is_import ]]; then
+	calculate_useable_cores
+fi
+
 if [[ $NODESETUP != "NODEADVANCED" ]]; then
 	NODE_ES_HEAP_SIZE=$ES_HEAP_SIZE
 	NODE_LS_HEAP_SIZE=$LS_HEAP_SIZE
@@ -350,61 +401,10 @@ echo "MINION_ID = $MINION_ID" >> $setup_log 2>&1
 
 minion_type=$(get_minion_type)
 
-# Set any variables needed
-set_default_log_size >> $setup_log 2>&1
 
-if [[ $is_helix ]]; then
-	RULESETUP=ETOPEN
-	NSMSETUP=BASIC
-	HNSENSOR=inherit
-	MANAGERUPDATES=0
-fi
-
-if [[ $is_helix || ( $is_manager && $is_node ) ]]; then
-	RULESETUP=ETOPEN
-	NSMSETUP=BASIC
-fi
-
-if [[ $is_manager && $is_node ]]; then
-	LSPIPELINEWORKERS=1
-	LSPIPELINEBATCH=125
-	LSINPUTTHREADS=1
-	LSPIPELINEBATCH=125
-	NIDS=Suricata
-	ZEEKVERSION=ZEEK
-fi
-
-if [[ $is_node ]]; then
-	CURCLOSEDAYS=30
-fi
-
-if [[ $is_import ]]; then
-	PATCHSCHEDULENAME=auto
-	MTU=1500
-	RULESETUP=ETOPEN
-	NSMSETUP=BASIC
-	HNSENSOR=inherit
-	MANAGERUPDATES=0
-	MANAGERADV=BASIC
-	INTERFACE=bond0
-	ZEEKVERSION=ZEEK
-	NIDS=Suricata
-	RULESETUP=ETOPEN
-	GRAFANA=0
-	OSQUERY=0
-	WAZUH=0
-	THEHIVE=0
-	PLAYBOOK=0
-fi
-
-# Start user prompts
 
 if [[ $is_helix || $is_sensor ]]; then
 	whiptail_sensor_nics
-fi
-
-if [[ $is_helix || $is_sensor || $is_import ]]; then
-	calculate_useable_cores
 fi
 
 if [[ ! $is_import ]]; then
