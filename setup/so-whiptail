@@ -543,11 +543,11 @@ whiptail_install_type() {
 	# What kind of install are we doing?
 	install_type=$(whiptail --title "Security Onion Setup" --menu \
 	"Choose install type:" 13 65 5 \
-		"EVAL" "Evaluation mode (not for production) " \
-		"STANDALONE" "Standalone production install " \
-		"IMPORT" "Standalone to import PCAP or log files " \
-		"DISTRIBUTED" "Distributed install submenu " \
-		"OTHER" "Other install types" \
+		"Eval" "Evaluation mode (not for production) " \
+		"Standalone" "Standalone production install " \
+		"Import" "Standalone to import PCAP or log files " \
+		"Distributed" "Distributed install submenu " \
+		"Other" "Other install types" \
 		3>&1 1>&2 2>&3
 	)
 
@@ -560,6 +560,8 @@ whiptail_install_type() {
 		whiptail_install_type_other
 	fi
 
+	install_type=$(${install_type^^} | tr -d ' ')
+
 	export install_type
 }
 
@@ -569,12 +571,12 @@ whiptail_install_type_dist() {
 	
 	install_type=$(whiptail --title "Security Onion Setup" --menu \
 	"Choose distributed node type:" 13 60 6 \
-		"MANAGER" "Start a new grid " \
-		"SENSOR" "Create a forward only sensor " \
-		"SEARCHNODE" "Add a search node with parsing " \
-		"MANAGERSEARCH" "Manager + search node " \
-		"FLEET" "Dedicated Fleet Osquery Node " \
-		"HEAVYNODE" "Sensor + Search Node " \
+		"Manager" "Start a new grid " \
+		"Sensor" "Create a forward only sensor " \
+		"Search Node" "Add a search node with parsing " \
+		"Manager Search" "Manager + search node " \
+		"Fleet" "Dedicated Fleet Osquery Node " \
+		"Heavy Node" "Sensor + Search Node " \
 		3>&1 1>&2 2>&3
 		# "HOTNODE" "Add Hot Node (Uses Elastic Clustering)" OFF \ # TODO
 		# "WARMNODE" "Add Warm Node to existing Hot or Search node" OFF \ # TODO
@@ -584,6 +586,8 @@ whiptail_install_type_dist() {
 
 	local exitstatus=$?
 	whiptail_check_exitstatus $exitstatus
+
+	install_type=$(${install_type^^} | tr -d ' ')
 
 	export install_type
 }
@@ -597,20 +601,22 @@ whiptail_install_type_other() {
 	if [[ $setup_type == 'network' ]]; then
 		install_type=$(whiptail --title "Security Onion Setup" --menu \
 		"Choose distributed node type:" 9 65 2 \
-			"ANALYST" "Quit setup and run so-analyst-install " \
-			"HELIXSENSOR" "Create a Helix sensor " \
+			"Analyst" "Quit setup and run so-analyst-install " \
+			"Helix Sensor" "Create a Helix sensor " \
 			3>&1 1>&2 2>&3
 		)
 	else
 		install_type=$(whiptail --title "Security Onion Setup" --menu \
 		"Choose distributed node type:" 8 65 1 \
-			"HELIXSENSOR" "Create a Helix sensor " \
+			"Helix Sensor" "Create a Helix sensor " \
 			3>&1 1>&2 2>&3
 		)
 	fi
 
 	local exitstatus=$?
 	whiptail_check_exitstatus $exitstatus
+
+	install_type=$(${install_type^^} | tr -d ' ')
 
 	export install_type
 }
@@ -946,13 +952,16 @@ whiptail_manager_adv() {
 
 	MANAGERADV=$(whiptail --title "Security Onion Setup" --menu \
 	"Choose which type of manager to install:" 10 75 2 \
-	"BASIC" "Install manager with recommended settings"  \
-	"ADVANCED" "Do additional configuration to the manager" 3>&1 1>&2 2>&3 )
+	"Basic" "Install manager with recommended settings"  \
+	"Advanced" "Do additional configuration to the manager" 3>&1 1>&2 2>&3 )
 
 	local exitstatus=$?
 	whiptail_check_exitstatus $exitstatus
 
+	MANAGERADV=${MANAGERADV^^}
+
 	if [[ $MANAGERADV == "ADVANCED" ]]; then is_advanced=true; fi
+
 }
 
 # Ask if you want to do true clustering
@@ -1054,6 +1063,7 @@ whiptail_manager_updates() {
 			;;
 	esac
 
+	update_string=${update_string^^}
 }
 
 whiptail_manager_updates_warning() {
@@ -1104,12 +1114,13 @@ whiptail_node_advanced() {
 
 	NODESETUP=$(whiptail --title "Security Onion Setup" --menu \
 	"What type of config would you like to use?:" 10 75 2 \
-	"NODEBASIC" "Install Search Node with recommended settings" \
-	"NODEADVANCED" "Advanced Node Setup" 3>&1 1>&2 2>&3 )
-
+	"Basic" "Install Search Node with recommended settings" \
+	"Advanced" "Advanced Node Setup" 3>&1 1>&2 2>&3 )
+	
 	local exitstatus=$?
 	whiptail_check_exitstatus $exitstatus
 
+	NODESETUP="NODE${NODESETUP^^}"
 }
 
 whiptail_node_es_heap() {
