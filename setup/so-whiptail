@@ -728,7 +728,7 @@ whiptail_main_menu() {
 	opt="Advanced"
 	((req_opt_count++))
 	__check_comp_opt_list "$opt"
-	menu_opts=("[$opt_statu] $opt" "Advanced node settings")
+	menu_opts=("[$opt_status] $opt" "Advanced node settings")
 	fi
 
 	opt="Misc"
