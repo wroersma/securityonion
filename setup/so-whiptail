@@ -758,9 +758,6 @@ whiptail_main_menu() {
 
 	local exitstatus=$?
 	whiptail_check_exitstatus "$exitstatus"
-
-	cancel=false
-	whiptail_menu_set "$option"
 }
 
 __check_comp_opt_list() {

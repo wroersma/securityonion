@@ -254,8 +254,12 @@ fi
 if [[ $is_node && ! $is_eval ]]; then
 	whiptail_node_advanced
 fi
-
+	
 whiptail_main_menu
+while [[ $option != "FINISH" ]]; do
+	whiptail_menu_set "$option"
+	whiptail_main_menu
+done
 
 whiptail_make_changes
 
