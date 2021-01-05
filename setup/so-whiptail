@@ -752,7 +752,8 @@ whiptail_main_menu() {
 		menu_opts+=("FINISH" "Confirm settings and begin installation")
 	fi
 
-	option=$(whiptail --title "Security Onion Setup" --menu "Select an option" 18 75 10 "${menu_opts[@]}" 3>&1 1>&2 2>&3)
+	#TODO: Fix sizing by decreasing description text
+	option=$(whiptail --title "Security Onion Setup" --menu "Select an option" 18 100 10 "${menu_opts[@]}" 3>&1 1>&2 2>&3)
 
 	local exitstatus=$?
 	whiptail_check_exitstatus "$exitstatus"
