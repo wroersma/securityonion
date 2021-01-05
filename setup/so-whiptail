@@ -724,18 +724,6 @@ whiptail_main_menu() {
 		menu_opts+=("[$opt_status] $opt" "Create user for Fleet")
 	fi
 
-	if [[ $is_manager || $is_import ]]; then
-		opt="Run so-allow"
-		__check_comp_opt_list "$opt"
-		menu_opts+=("[$opt_status] $opt" "Allow a subnet or single ip to connect to ports 80/443 before boot (optional)")
-	fi
-
-	if [[ $is_manager && ! $is_eval ]] || [[ $is_node && ! $is_eval ]]; then
-		opt="ES Cluster"
-		__check_comp_opt_list "$opt"
-		menu_opts+=("[$opt_status] $opt" "ES cluster setup (optional, not receommended for those just starting out)")
-	fi
-
 	if [[ $NODESETUP == "NODEADVANCED" ]]; then\
 	opt="Advanced"
 	((req_opt_count++))
@@ -747,6 +735,18 @@ whiptail_main_menu() {
 	((req_opt_count++))
 	__check_comp_opt_list "$opt"
 	menu_opts+=("[$opt_status] $opt" "Other required installation options")
+
+	if [[ $is_manager || $is_import ]]; then
+		opt="Run so-allow"
+		__check_comp_opt_list "$opt"
+		menu_opts+=("[$opt_status] $opt" "Allow a subnet or single ip to connect to ports 80/443 before boot (optional)")
+	fi
+
+	if [[ $is_manager && ! $is_eval ]] || [[ $is_node && ! $is_eval ]]; then
+		opt="ES Cluster"
+		__check_comp_opt_list "$opt"
+		menu_opts+=("[$opt_status] $opt" "ES cluster setup (optional, not receommended for those just starting out)")
+	fi
 
 	if [[ ${#completed_req_opts[@]} -ge $req_opt_count ]]; then
 		menu_opts+=("FINISH" "Confirm settings and begin installation")
