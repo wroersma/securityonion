@@ -747,6 +747,10 @@ detect_os() {
 
 	# Detect Base OS
 	echo "Detecting Base OS" >> "$setup_log" 2>&1
+	echo "Running initial setup steps..."
+
+	[[ $is_iso ]] || echo "  Checking OS version..."
+
 	if [ -f /etc/redhat-release ]; then
 		OS=centos
 		if grep -q "CentOS Linux release 7" /etc/redhat-release; then
@@ -760,13 +764,15 @@ detect_os() {
 			exit 1
 		fi
 
-		# Print message to stdout so the user knows setup is doing something
-		echo "Installing required packages to run installer..."
-		# Install bind-utils so the host command exists
 		if [[ ! $is_iso ]]; then
+			# Print message to stdout so the user knows setup is doing something
+			echo "  Installing required packages to run installer..."
+			
+			# Install bind-utils so the host command exists
 		  if ! command -v host > /dev/null 2>&1; then
 			yum -y install bind-utils >> "$setup_log" 2>&1
 		  fi
+
 		  if ! command -v nmcli > /dev/null 2>&1; then
 			{
 				yum -y install NetworkManager;
@@ -774,16 +780,18 @@ detect_os() {
 				systemctl start NetworkManager;
 			} >> "$setup_log" 2<&1
 		  fi
+
 		  if ! command -v bc > /dev/null 2>&1; then
 			yum -y install bc >> "$setup_log" 2>&1
 		  fi
+
 		  if ! yum versionlock > /dev/null 2>&1; then
 			yum -y install yum-plugin-versionlock >> "$setup_log" 2>&1
 		  fi
-        else
+		else
 		  logCmd "systemctl enable NetworkManager"
 		  logCmd "systemctl start NetworkManager"
-        fi
+		fi
 	elif [ -f /etc/os-release ]; then
 		OS=ubuntu
 		if grep -q "UBUNTU_CODENAME=bionic" /etc/os-release; then
@@ -796,17 +804,18 @@ detect_os() {
 		fi
 
 		# Print message to stdout so the user knows setup is doing something
-		echo "Installing required packages to run installer..."
-		# Install network manager so we can do interface stuff
+		echo "  Installing required packages to run installer..."
+
 		if ! command -v nmcli > /dev/null 2>&1; then
+			# Install network manager so we can do interface stuff
 			if wait_for_apt; then apt-get install -y network-manager >> "$setup_log" 2<&1; else exit 1; fi
 			{
 				systemctl enable NetworkManager
 				systemctl start NetworkManager
 			} >> "$setup_log" 2<&1
 		fi
-		if wait_for_apt; then apt-get install -y bc curl >> "$setup_log" 2>&1; else exit 1; fi
 
+		if wait_for_apt; then apt-get install -y bc curl >> "$setup_log" 2>&1; else exit 1; fi
 	else
 		echo "We were unable to determine if you are using a supported OS."
 		exit 1
