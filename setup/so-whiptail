@@ -667,7 +667,7 @@ whiptail_main_menu() {
 	# menu_opts+=("${global_menu_opts[@]}")	
 	
 	local opt
-	local opt_count
+	local req_opt_count
 
 	cancel=true
 
@@ -678,7 +678,7 @@ whiptail_main_menu() {
 	if ! [[ $is_minion ]] || ! [ -f /root/install_opt ]; then
 		if [[ $reinit_networking ]] || ! [[ -f $net_init_file ]]; then
 			opt="Networking"
-			((opt_count++))
+			((req_opt_count++))
 			__check_comp_opt_list "$opt"
 			menu_opts+=( "[$opt_status] $opt" "Configure management ${sensor_net_msg}interfaces" )
 		fi
@@ -686,28 +686,28 @@ whiptail_main_menu() {
 
 	if [[ $is_manager && ! $is_eval ]]; then
 		opt="Metadata Tool"
-		((opt_count++))
+		((req_opt_count++))
 		__check_comp_opt_list "$opt"
 		menu_opts+=("[$opt_status] $opt" "Select a metadata tool to use and configure options for that tool")
 	fi
 
 	if [[ $is_sensor && ! $is_eval ]]; then
 		opt="Sensor"
-		((opt_count++))
+		((req_opt_count++))
 		__check_comp_opt_list "$opt"
 		menu_opts+=("[$opt_status] $opt" "Sensor configuration options")
 	fi
 
 	if [[ $is_manager ]]; then
 		opt="Components"
-		((opt_count++))
+		((req_opt_count++))
 		__check_comp_opt_list "$opt"
 		menu_opts+=("[$opt_status] $opt" "Enable/diable components of Security Onion")
 	fi
 	
 	if [[ $is_manager || $is_import ]]; then
 		opt="Access"
-		((opt_count++))
+		((req_opt_count++))
 		__check_comp_opt_list "$opt"
 
 		if [[ $is_distmanager ]]; then
@@ -719,7 +719,7 @@ whiptail_main_menu() {
 
 	if [[ $is_fleet_standalone ]]; then
 		opt="Fleet User"
-		((opt_count++))
+		((req_opt_count++))
 		__check_comp_opt_list "$opt"
 		menu_opts+=("[$opt_status] $opt" "Create user for Fleet")
 	fi
@@ -738,30 +738,32 @@ whiptail_main_menu() {
 
 	if [[ $NODESETUP == "NODEADVANCED" ]]; then\
 	opt="Advanced"
-	((opt_count++))
+	((req_opt_count++))
 	__check_comp_opt_list "$opt"
 	menu_opts=("[$opt_statu] $opt" "Advanced node settings")
 	fi
 
 	opt="Misc"
-	((opt_count++))
+	((req_opt_count++))
 	__check_comp_opt_list "$opt"
 	menu_opts+=("[$opt_status] $opt" "Other required installation options")
 
-	if [[ ${#completed_opts[@]} -ge $opt_count ]]; then
+	if [[ ${#completed_req_opts[@]} -ge $req_opt_count ]]; then
 		menu_opts+=("FINISH" "Confirm settings and begin installation")
 	fi
 
-	option=$(whiptail --title "Security Onion Setup" --menu "Select an option" 18 75 10 \
-		"${menu_opts[@]}" 3>&1 1>&2 2>&3
-	)
+	option=$(whiptail --title "Security Onion Setup" --menu "Select an option" 18 75 10 "${menu_opts[@]}" 3>&1 1>&2 2>&3)
 
 	local exitstatus=$?
 	whiptail_check_exitstatus "$exitstatus"
+
+	option=$(echo "$option" | sed 's/\[.*\] //')
 }
 
 __check_comp_opt_list() {
 	local opt=$1
+
+	completed_opts=("${completed_req_opts[@]}" "${completed_opt_opts[@]}")
 
 	for c_opt in "${completed_opts[@]}"; do
 		if [[ $c_opt == "$opt" ]]; then

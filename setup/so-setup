@@ -254,6 +254,15 @@ fi
 if [[ $is_node && ! $is_eval ]]; then
 	whiptail_node_advanced
 fi
+
+if [[ $NODESETUP != "NODEADVANCED" ]]; then
+	NODE_ES_HEAP_SIZE=$ES_HEAP_SIZE
+	NODE_LS_HEAP_SIZE=$LS_HEAP_SIZE
+	LSPIPELINEWORKERS=$num_cpu_cores
+	LSPIPELINEBATCH=125
+	LSINPUTTHREADS=1
+	LSPIPELINEBATCH=125
+fi
 	
 whiptail_main_menu
 while [[ $option != "FINISH" ]]; do
@@ -265,6 +274,7 @@ whiptail_make_changes
 
 #TODO: TEMPORARY FOR DEMO!!!!!!!!!!!!
 exit 0
+
 if ! [[ -f $install_opt_file ]]; then
 	if [[ $is_manager && $is_sensor ]]; then
 		check_requirements "standalone"

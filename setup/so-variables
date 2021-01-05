@@ -73,5 +73,8 @@ export install_opt_file
 net_init_file=/root/net_init
 export net_init_file
 
-completed_opts=()
-export completed_opts
+completed_req_opts=()
+export completed_req_opts
+
+completed_opt_opts=()
+export completed_opt_opts

@@ -2301,7 +2301,7 @@ whiptail_menu_set() {
 	case "$opt" in
 		"Networking")
 			#TODO: More work needs to be done to networking logic before this can be filled in
-			completed_opts+=("$opt")
+			completed_req_opts+=("$opt")
 		;;
 		"Metadata Tool")
 			whiptail_metadata_tool
@@ -2316,7 +2316,7 @@ whiptail_menu_set() {
 			if [ "$RULESETUP" != 'ETOPEN' ]; then
 				whiptail_oinkcode
 			fi
-			completed_opts+=("$opt")
+			completed_req_opts+=("$opt")
 		;;
 		"Sensor")
 			whiptail_homenet_sensor
@@ -2329,7 +2329,7 @@ whiptail_menu_set() {
 				whiptail_basic_zeek
 				whiptail_basic_suri
 			fi
-			completed_opts+=("$opt")
+			completed_req_opts+=("$opt")
 		;;
 		"Components")
 			whiptail_components_adv_warning
@@ -2341,7 +2341,7 @@ whiptail_menu_set() {
 			else
 				info "Disabling Strelka rules: STRELKA='$STRELKA'"
 			fi
-			completed_opts+=("$opt")
+			completed_req_opts+=("$opt")
 		;;
 		"Access")
 			collect_webuser_inputs
@@ -2353,12 +2353,12 @@ whiptail_menu_set() {
 				FLEETNODEUSER=$WEBUSER
 				FLEETNODEPASSWD1=$WEBPASSWD1
 			fi
-			completed_opts+=("$opt")
+			completed_req_opts+=("$opt")
 		;;
 		"Fleet User")
 			collect_fleetuser_inputs
 			collect_fleet_custom_hostname_inputs
-			completed_opts+=("$opt")
+			completed_req_opts+=("$opt")
 		;;
 		"Misc")
 			whiptail_dockernet_check
@@ -2368,33 +2368,21 @@ whiptail_menu_set() {
 					whiptail_manager_updates_warning
 				fi
 			fi
-			completed_opts+=("$opt")
+			completed_req_opts+=("$opt")
 		;;
 		"Advanced")
-			if [[ $is_node && ! $is_eval ]]; then
-				whiptail_node_advanced
-				if [ "$NODESETUP" == 'NODEADVANCED' ]; then
-					whiptail_node_es_heap
-					whiptail_node_ls_heap
-					whiptail_node_ls_pipeline_worker
-					whiptail_node_ls_pipline_batchsize
-					whiptail_node_ls_input_threads
-					whiptail_cur_close_days
-					whiptail_log_size_limit
-				else
-					NODE_ES_HEAP_SIZE=$ES_HEAP_SIZE
-					NODE_LS_HEAP_SIZE=$LS_HEAP_SIZE
-					LSPIPELINEWORKERS=$num_cpu_cores
-					LSPIPELINEBATCH=125
-					LSINPUTTHREADS=1
-					LSPIPELINEBATCH=125
-				fi
-			fi
-			completed_opts+=("$opt")
+			whiptail_node_es_heap
+			whiptail_node_ls_heap
+			whiptail_node_ls_pipeline_worker
+			whiptail_node_ls_pipline_batchsize
+			whiptail_node_ls_input_threads
+			whiptail_cur_close_days
+			whiptail_log_size_limit
+			completed_req_opts+=("$opt")
 		;;
 		"Run so-allow")
 			whiptail_so_allow
-			completed_opts+=("$opt")
+			completed_opt_opts+=("$opt")
 		;;
 	esac
 }
