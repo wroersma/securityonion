@@ -542,11 +542,11 @@ whiptail_install_type() {
 
 	# What kind of install are we doing?
 	install_type=$(whiptail --title "Security Onion Setup" --menu \
-	"Choose install type:" 12 65 5 \
+	"Choose install type:" 13 65 5 \
 		"EVAL" "Evaluation mode (not for production) " \
 		"STANDALONE" "Standalone production install " \
-		"DISTRIBUTED" "Distributed install submenu " \
 		"IMPORT" "Standalone to import PCAP or log files " \
+		"DISTRIBUTED" "Distributed install submenu " \
 		"OTHER" "Other install types" \
 		3>&1 1>&2 2>&3
 	)
@@ -945,15 +945,14 @@ whiptail_manager_adv() {
 	[ -n "$TESTING" ] && return
 
 	MANAGERADV=$(whiptail --title "Security Onion Setup" --menu \
-	"Choose which type of manager to install:" 20 75 4 \
+	"Choose which type of manager to install:" 10 75 2 \
 	"BASIC" "Install manager with recommended settings"  \
 	"ADVANCED" "Do additional configuration to the manager" 3>&1 1>&2 2>&3 )
-
-	if [[ $MANAGERADV == "ADVANCED" ]]; then is_advanced=true; fi
 
 	local exitstatus=$?
 	whiptail_check_exitstatus $exitstatus
 
+	if [[ $MANAGERADV == "ADVANCED" ]]; then is_advanced=true; fi
 }
 
 # Ask if you want to do true clustering
@@ -1104,7 +1103,7 @@ whiptail_node_advanced() {
 	[ -n "$TESTING" ] && return
 
 	NODESETUP=$(whiptail --title "Security Onion Setup" --menu \
-	"What type of config would you like to use?:" 20 75 4 \
+	"What type of config would you like to use?:" 10 75 2 \
 	"NODEBASIC" "Install Search Node with recommended settings" \
 	"NODEADVANCED" "Advanced Node Setup" 3>&1 1>&2 2>&3 )
 
