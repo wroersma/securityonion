@@ -17,15 +17,15 @@
 
 {% set MANAGER = salt['grains.get']('master') %}
 
-# Suricata
+# Zookeeper
 
-# Add Suricata Group
+# Add zookeeper Group
 zkgroup:
   group.present:
     - name: zookeeper
     - gid: 947
 
-# Add ES user
+# Add zookeeper user
 zookeeper:
   user.present:
     - uid: 947
@@ -54,6 +54,14 @@ zkdatadir:
     - group: 939
     - makedirs: True
 
+zkconf:
+  file.managed:
+    - name: /opt/so/conf/zk/etc/zoo.cfg
+    - user: 939
+    - group: 939
+    - template: jinja
+    - source: salt://zk/etc/zoo.cfg
+
 so-zk:
   docker_container.running:
     - image: {{ MANAGER }}:5000/{{ IMAGEREPO }}/so-zk:{{ VERSION }}
@@ -65,10 +73,7 @@ so-zk:
       - /opt/so/conf/zk/etc/zoo.cfg:/conf/zoo.cfg:ro
       - /nsm/zk/:/nsm/zk:rw
     - watch:
-      - file: /opt/so/conf/.yaml
-      - file: surithresholding
-      - file: /opt/so/conf/suricata/rules/
-      - file: /opt/so/conf/suricata/bpf
+      - file: zkconf
 
 {% else %}
 
