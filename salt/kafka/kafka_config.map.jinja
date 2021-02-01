@@ -1,0 +1,4 @@
+{% import_yaml 'kafka/defaults.yaml' as kafka_defaults with context %}
+{% set kafka_pillar = salt['pillar.get']('kafka:config', {}) %}
+
+{% do salt['defaults.merge'](kafka_defaults.kafka.config, kafka_pillar, in_place=True) %}

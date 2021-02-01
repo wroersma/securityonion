@@ -1,0 +1,3 @@
+{-% for k, v in kafka_config.items() %}
+{{ k | lower }}={{ v }}
+{%- endfor %}

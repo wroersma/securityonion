@@ -15,6 +15,7 @@
 {% from 'allowed_states.map.jinja' import allowed_states %}
 {% if sls in allowed_states %}
 
+{% from 'kafka/kafka_config.map.jinja' import kafka_defaults as kafka_config with context %}
 {% set MANAGER = salt['grains.get']('master') %}
 
 # Kafka
@@ -60,7 +61,9 @@ kafkaconf:
     - user: 948
     - group: 939
     - template: jinja
-    - source: salt://kafka/etc/kafka.cfg
+    - source: salt://kafka/etc/kafka.cfg.jinja
+    - context:
+        kafka_config: {{ kafka_config.kafka.config }}
 
 so-kafka:
   docker_container.running:
