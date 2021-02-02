@@ -108,6 +108,111 @@ kafka:
     log.cleaner.min.compation.lag.ms: 0
     log.cleaner.threads: 1
     log.cleanup.policy: delete
-    
-
+    log.index.interval.bytes: 4096
+    log.index.size.max.mytes: 10485760
+    log.message.format.version:
+    log.message.timestamp.difference.max.ms: 9223372036854775807
+    log.message.timestamp.type: CreateTime
+    log.preallocate: false
+    log.retention.check.interval.ms: 300000
+    max.connection.creation.rate: 2147483647
+    max.connections: 2147483647
+    max.connections.per.ip: 2147483647
+    max.connections.per.ip.overrides: 
+    num.partitions: 1
+    password.encoder.old.secret:
+    password.encoder.secret:
+    principal.builder.class:
+    producer.purgatory.purge.interval.requests: 1000
+    queued.max.request.bytes:
+    replica.fetch.backoff.ms: 1000
+    replica.fetch.max.bytes: 1048576
+    replica.fetch.response.max.bytes: 10485760
+    replica.selector.class:
+    reserved.broker.max.id: 1000
+    sasl.client.callback.handler.class:
+    sasl.enabled.mechanisms: GSSAPI
+    sasl.jaas.config:
+    sasl.kerberos.kinit.cmd: /usr/bin/kinit
+    sasl.kerberos.min.time.before.relogin: 60000
+    sasl.kerberos.principal.to.local.rules: DEFAULT
+    sasl.kerberos.service.name:
+    sasl.kerberos.ticket.renew.jitter: "0.05"
+    sasl.kerberos.ticket.renew.window.factor: "0.8"
+    sasl.login.callback.handler.class:
+    sasl.login.class:
+    sasl.login.refresh.buffer.seconds: 300
+    sasl.login.refresh.min.period.seconds: 60
+    sasl.login.refresh.window.factor: "0.8"
+    sasl.login.refresh.window.jitter: "0.05"
+    sasl.mechanism.inter.broker.protocol: GSSAPI
+    sasl.server.callback.handler.class: 
+    security.inter.broker.protocol: PLAINTEXT
+    socket.connection.setup.timeout.max.ms: 127000
+    socket.connection.setup.timeout.ms: 10000
+    ssl.cipher.suites:
+    ssl.client.auth: none
+    ssl.enabled.protocols: "TLSv1.3"
+    ssl.key.password:
+    ssl.keymanager.algorithm: SunX509
+    ssl.keystore.certificate.chain:
+    ssl.keystore.key:
+    ssl.keystore.location:
+    ssl.keystore.password:
+    ssl.keystore.type: JKS
+    ssl.protocol: "TLSv1.3"
+    ssl.provider:
+    ssl.trustmanager.algorithm: PKIX
+    ssl.truststore.certificates:
+    ssl.truststore.location:
+    ssl.truststore.password:
+    ssl.truststore.type: JKS
+    zookeeper.clientCnxnSocket:
+    zookeeper.ssl.client.enable: false
+    zookeeper.ssl.keystore.location: 
+    zookeeper.ssl.keystore.password:
+    zookeeper.ssl.keystore.type:
+    zookeeper.ssl.truststore.location:
+    zookeeper.ssl.truststore.password:
+    zookeeper.ssl.truststore.type:
+    alter.config.policy.class.name:
+    alter.log.dirs.replication.quota.window.num: 11
+    alter.log.dirs.replication.quota.window.size.seconds: 1
+    authorizer.class.name:
+    client.quota.callback.class:
+    connection.failed.authentication.delay.ms: 100
+    controller.quota.window.num: 11
+    controller.quota.window.size.seconds: 1
+    create.topic.policy.class.name:
+    delegation.token.expiry.check.interval.ms: 3600000
+    kafka.metrics.polling.interval.secs: 10
+    kafka.metrics.reporters:
+    listener.security.protocol.map: "PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL"
+    log.message.downconversion.enable: true
+    metric.reporters:
+    metrics.num.samples: 2
+    metrics.recording.level: INFO
+    metrics.sample.window.ms: 30000
+    password.encoder.cipher.algorithm: "AES/CBC/PKCS5Padding"
+    password.encoder.iterations: 4096
+    password.encoder.key.length: 128
+    password.encoder.keyfactory.algorithm:
+    quota.window.num: 11
+    quota.window.size.seconds: 1
+    replication.quota.window.num: 11
+    replication.quota.window.size.seconds: 1
+    security.providers:
+    ssl.endpoint.identification.algorithm: https
+    ssl.engine.factory.class:
+    ssl.principal.mapping.rules: DEFAULT
+    ssl.secure.random.implementation:
+    transaction.abort.timed.out.transaction.cleanup.interval.ms: 10000
+    transaction.remove.expired.transaction.cleanup.interval.ms: 
+    zookeeper.ssl.cipher.suites:
+    zookeeper.ssl.crl.enable: false
+    zookeeper.ssl.enabled.protocols:
+    zookeeper.ssl.endpoint.identification.algorithm: HTTPS
+    zookeeper.ssl.ocsp.enable: false
+    zookeeper.ssl.protocol: "TLSv1.3"
+    zookeeper.sync.time.ms: 2000
 
