@@ -1,0 +1,13 @@
+{%- set MANAGER = salt['grains.get']('master') %}
+{%- set THREADS = salt['pillar.get']('logstash_settings:ls_input_threads', '') %}
+{% set BATCH = salt['pillar.get']('logstash_settings:ls_pipeline_batch_size', 125) %}
+
+input {
+      s3 {
+        access_key_id => "1234"
+        secret_access_key => "secret"
+        bucket => "logstash-test"
+        codec => "json"
+        tags => [ "cloudtrail" ]
+	}
+}

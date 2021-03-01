@@ -1,0 +1,33 @@
+{%- if grains['role'] == 'so-eval' -%}
+{%- set ES = salt['pillar.get']('manager:mainip', '') -%}
+{%- else %}
+{%- set ES = salt['pillar.get']('elasticsearch:mainip', '') -%}
+{%- endif %}
+{% set FEATURES = salt['pillar.get']('elastic:features', False) %}
+
+
+filter {
+  if "cloudtrail" in [tags] and [Records] {
+    split {
+   field => "Records"
+  }
+    }
+ }
+
+
+output {
+  if "cloudtrail" in [tags] and "import" not in [tags] {
+    elasticsearch {
+      pipeline => "common" 
+      hosts => "{{ ES }}"
+      index => "so-cloudtrail"
+      template_name => "so-beats"
+      template => "/templates/so-beats-template.json"
+      template_overwrite => true
+      {%- if grains['role'] in ['so-node','so-heavynode'] %}
+      ssl => true
+      ssl_certificate_verification => false
+      {%- endif %}
+    }
+  }
+}
