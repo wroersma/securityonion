@@ -64,6 +64,13 @@ salttmp:
     - group: 939
     - makedirs: True
 
+commonsoversion:
+  file.managed:
+    - name: /etc/soversion
+    - source: salt://common/files/soversion
+    - template: jinja
+    - mode: 644
+
 # Install epel
 {% if grains['os'] == 'CentOS' %}
 repair_yumdb:
