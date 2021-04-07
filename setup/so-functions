@@ -44,6 +44,21 @@ logCmd() {
 }
 ### End Logging Section ###
 
+airgap_repo() {
+	# Remove all the repo files
+	rm -rf /etc/yum.repos.d/*
+	echo "[airgap_repo]" > /etc/yum.repos.d/airgap_repo.repo
+	if $is_manager; then
+	    echo "baseurl=https://$HOSTNAME/repo" >> /etc/yum.repos.d/airgap_repo.repo
+	else
+        echo "baseurl=https://$MSRV/repo" >> /etc/yum.repos.d/airgap_repo.repo
+	fi
+    echo "gpgcheck=1" >> /etc/yum.repos.d/airgap_repo.repo
+    echo "sslverify=0" >> /etc/yum.repos.d/airgap_repo.repo
+    echo "name=Airgap Repo" >> /etc/yum.repos.d/airgap_repo.repo
+    echo "enabled=1" >> /etc/yum.repos.d/airgap_repo.repo
+}
+
 airgap_rules() {
 	# Copy the rules for suricata if using Airgap
 	mkdir -p /nsm/repo/rules
@@ -997,7 +1012,7 @@ create_repo() {
 
 detect_cloud() {
   echo "Testing if setup is running on a cloud instance..." | tee -a "$setup_log"
-  if ( curl --fail -s -m 5 http://169.254.169.254/latest/meta-data/instance-id > /dev/null ) || ( dmidecode -s bios-vendor | grep -q Google > /dev/null); then export is_cloud="true"; fi
+  if ( curl --fail -s -m 5 http://169.254.169.254/latest/meta-data/instance-id > /dev/null ) || ( dmidecode -s bios-vendor | grep -q Google > /dev/null) || [ -f /var/log/waagent.log ]; then export is_cloud="true"; fi
 }
 
 detect_os() {
@@ -1454,8 +1469,6 @@ install_cleanup() {
 		info "Removing so-setup permission entry from sudoers file"
 		sed -i '/so-setup/d' /etc/sudoers
 	fi
-
-	so-ssh-harden -q
 }
 
 import_registry_docker() {
@@ -2272,14 +2285,14 @@ secrets_pillar(){
 
 securityonion_repo() {
 	# Remove all the current repos
-	if [[ "$OS" == "centos" ]]; then
+	if [[ "$OS" == "centos" && $is_airgap ]]; then
 	    mkdir -p /root/oldrepos
 	    mv /etc/yum.repos.d/* /root/oldrepos/
 		rm -f /etc/yum.repos.d/*
 		if [[ ! $is_manager && "$MANAGERUPDATES" == "1" ]]; then
-		    cp -f ./yum_repos/securityonioncache.repo /etc/yum.repos.d/
+		    cp -f ../salt/common/yum_repos/securityonioncache.repo /etc/yum.repos.d/
 		else
-		    cp -f ./yum_repos/securityonion.repo /etc/yum.repos.d/
+		    cp -f ../salt/common/yum_repos/securityonion.repo /etc/yum.repos.d/
 		fi
 	else
         echo "This is Ubuntu"
