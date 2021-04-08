@@ -71,7 +71,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ "$setup_type" == 'iso' ]]; then
-  is_iso=true
+	is_iso=true
 fi
 
 if ! [ -f $install_opt_file ] && [ -d /root/manager_setup/securityonion ] && [[ $(pwd) != /root/manager_setup/securityonion/setup ]]; then
@@ -461,9 +461,9 @@ fi
 if [[ $is_manager && ! $is_eval ]]; then
 	whiptail_manager_adv
 	if [ "$MANAGERADV" = 'ADVANCED' ]; then
-	  if [ "$install_type" = 'MANAGER' ] || [ "$install_type" = 'MANAGERSEARCH' ]; then
-	  	collect_es_cluster_name
-	  fi
+		if [ "$install_type" = 'MANAGER' ] || [ "$install_type" = 'MANAGERSEARCH' ]; then
+			collect_es_cluster_name
+		fi
 	fi
 
 	whiptail_metadata_tool
@@ -645,10 +645,10 @@ set_redirect >> $setup_log 2>&1
 	# Import the gpg keys
 	gpg_rpm_import >> $setup_log 2>&1
 	if [[ ! $is_airgap ]]; then
-	    securityonion_repo >> $setup_log 2>&1
-	    update_packages >> $setup_log 2>&1
+		securityonion_repo >> $setup_log 2>&1
+		update_packages >> $setup_log 2>&1
 	else
-	    airgap_repo >> $setup_log 2>&1
+		airgap_repo >> $setup_log 2>&1
 	fi
 
 	if [[ $is_sensor || $is_helix || $is_import ]]; then
