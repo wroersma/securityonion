@@ -1165,23 +1165,26 @@ whiptail_manager_updates() {
 
 	[ -n "$TESTING" ] && return
 
+	local msg="From where do you want nodes to download OS package updates?"
+	[[ -n $so_proxy ]] && msg="${msg}\n(Note: Using the manager will override the proxy set earlier during setup.)"
+
 	local update_string
-	update_string=$(whiptail --title "Security Onion Setup" --radiolist \
-	"How would you like to download OS package updates for your grid?" 20 75 4 \
-	"MANAGER" "Manager node is proxy for updates" ON \
-	"OPEN" "Each node connects to the Internet for updates" OFF 3>&1 1>&2 2>&3 )
+	update_string=$(whiptail --title "Security Onion Setup" --menu "$msg" 11 75 2 \
+	"Manager   " "Nodes will reach out to the manager for updates" \
+	"Internet  " "Nodes will each reach out to the internet individually for updates" 3>&1 1>&2 2>&3 )
 	local exitstatus=$?
 	whiptail_check_exitstatus $exitstatus
+
+	update_string=$( echo "${update_string^^}" | tr -d ' ')
 
 	case "$update_string" in
 		'MANAGER')
 			export MANAGERUPDATES='1'
-			;;
+		;;
 		*)
 			export MANAGERUPDATES='0'
-			;;
+		;;
 	esac
-
 }
 
 whiptail_manager_updates_warning() {
@@ -1485,7 +1488,17 @@ whiptail_patch_schedule_select_hours() {
 whiptail_proxy_ask() {
 	[ -n "$TESTING" ] && return
 
-	whiptail --title "Security Onion Setup" --yesno "Do you want to set a proxy server for this installation?" 7 60 --defaultno
+	local pck_mngr
+	if [[ $OS = 'centos' ]]; then pck_mngr="yum"; else pck_mngr='apt'; fi
+
+	local msg
+	read -r -d '' msg <<- EOM
+	Do you want to set a proxy server for this installation?
+
+	This will configure git, the docker client, wget, curl, ${pck_mngr}, and various SO components to proxy their traffic through the server provided.
+	EOM
+
+	whiptail --title "Security Onion Setup" --yesno "$msg" 10 60 --defaultno
 }
 
 whiptail_proxy_addr() {
