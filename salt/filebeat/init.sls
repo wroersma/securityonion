@@ -55,6 +55,14 @@ filebeatconfsync:
     - defaults:
         INPUTS: {{ salt['pillar.get']('filebeat:config:inputs', {}) }}
         OUTPUT: {{ salt['pillar.get']('filebeat:config:output', {}) }}
+filebeatmoduleconfsync:
+  file.managed:
+    - name: /opt/so/conf/filebeat/etc/module-setup.yml
+    - source: salt://filebeat/etc/module-setup.yml
+    - user: root
+    - group: root
+    - template: jinja
+
 so-filebeat:
   docker_container.running:
     - image: {{ MANAGER }}:5000/{{ IMAGEREPO }}/so-filebeat:{{ VERSION }}
