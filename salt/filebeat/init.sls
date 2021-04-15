@@ -73,6 +73,7 @@ so-filebeat:
       - /nsm:/nsm:ro
       - /opt/so/log/filebeat:/usr/share/filebeat/logs:rw
       - /opt/so/conf/filebeat/etc/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /opt/so/conf/filebeat/etc/module-setup.yml:/usr/share/filebeat/module-setup.yml:ro
       - /nsm/wazuh/logs/alerts:/wazuh/alerts:ro
       - /nsm/wazuh/logs/archives:/wazuh/archives:ro
       - /opt/so/conf/filebeat/etc/pki/filebeat.crt:/usr/share/filebeat/filebeat.crt:ro
