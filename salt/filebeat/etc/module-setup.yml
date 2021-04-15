@@ -1,4 +1,4 @@
-{% if grains['role'] in ['so-eval', 'so-managersearch', 'so-standalone', 'so-heavynode', 'so-node' %}
+{% if grains['role'] in ['so-eval', 'so-managersearch', 'so-standalone', 'so-heavynode', 'so-node'] %}
 {%- set ELASTICSEARCH = salt['grains.get']('host' '') %}
 {%- endif %}
 
