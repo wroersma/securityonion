@@ -1,0 +1,10 @@
+{% set MANAGERIP = salt['pillar.get']('global:managerip', '') %}
+{
+  "logFilename": "/nsm/strelka/log/faf.log",
+  "logLevel":"info",
+  "redis": {
+  "serverUrl": "{{ MANAGERIP }}",
+  "serverPort": "6379",
+  "serverPassword": ""
+  }
+}

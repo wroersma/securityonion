@@ -190,10 +190,19 @@ append_so-strelka-filestream_so-status.conf:
     - name: /opt/so/conf/so-status/so-status.conf
     - text: so-strelka-filestream
 
+fafconf:
+  file.managed:
+    - name: /nsm/strelka/faf.json
+    - source: salt://strelka/files/backend/faf.json
+    - user: 939
+    - group: 939
+    - mode: 600
+    - template: jinja
+
 strelka_zeek_extracted_sync_old:
   cron.absent:
     - user: root
-    - name: '[ -d /nsm/zeek/extracted/complete/ ] && mv /nsm/zeek/extracted/complete/* /nsm/strelka/ > /dev/null 2>&1'
+    - name: '/nsm/strelka/faf'
     - minute: '*'
 
 {% if ENGINE == "SURICATA" %}
@@ -202,7 +211,7 @@ strelka_suricata_extracted_sync:
   cron.present:
     - user: root
     - identifier: zeek-extracted-strelka-sync
-    - name: '[ -d /nsm/suricata/extracted/ ] && find /nsm/suricata/extracted/* -not \( -path /nsm/suricata/extracted/tmp -prune \) -type f -print0 | xargs -0 -I {} mv {} /nsm/strelka/unprocessed/ > /dev/null 2>&1'
+    - name: '/nsm/strelka/faf'
     - minute: '*'
 
 {% else %}
@@ -210,7 +219,7 @@ strelka_zeek_extracted_sync:
   cron.present:
     - user: root
     - identifier: zeek-extracted-strelka-sync
-    - name: '[ -d /nsm/zeek/extracted/complete/ ] && mv /nsm/zeek/extracted/complete/* /nsm/strelka/unprocessed/ > /dev/null 2>&1'
+    - name: '/nsm/strelka/faf'
     - minute: '*'
 
 {% endif %}
